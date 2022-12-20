@@ -1,44 +1,49 @@
-uint64 timestamp                        # time since system start (microseconds)
-uint64 timestamp_sample                 # the timestamp of the raw data (microseconds)
+uint64 timestamp			# time since system start (microseconds)
 
-bool valid
+uint64 timestamp_sample                # the timestamp of the raw data (microseconds)
 
-uint8 SOURCE_UNKNOWN   = 0
-uint8 SOURCE_RC        = 1		# radio control (input_rc)
+uint8 SOURCE_RC = 1			# radio control
 uint8 SOURCE_MAVLINK_0 = 2		# mavlink instance 0
 uint8 SOURCE_MAVLINK_1 = 3		# mavlink instance 1
 uint8 SOURCE_MAVLINK_2 = 4		# mavlink instance 2
-uint8 SOURCE_MAVLINK_3 = 5		# mavlink instance 3
-uint8 SOURCE_MAVLINK_4 = 6		# mavlink instance 4
-uint8 SOURCE_MAVLINK_5 = 7		# mavlink instance 5
+uint8 SOURCE_MAVLINK_3 = 5		# mavlink instance 4
 
-uint8 data_source
+uint8 data_source		 # where this input is coming from
 
 # Any of the channels may not be available and be set to NaN
 # to indicate that it does not contain valid data.
+# The variable names follow the definition of the
+# MANUAL_CONTROL mavlink message.
+# The default range is from -1 to 1 (mavlink message -1000 to 1000)
+# The range for the z variable is defined from 0 to 1. (The z field of
+# the MANUAL_CONTROL mavlink message is defined from -1000 to 1000)
 
-# Stick positions [-1,1]
-# on a common RC mode 1/2/3/4 remote/joystick the stick deflection: -1 is down/left, 1 is up/right
-# Note: QGC sends throttle/z in range [0,1000] - [0,1]. The MAVLink input conversion [0,1] to [-1,1] is at the moment kept backwards compatible.
-# Positive values are generally used for:
-float32 roll     # move right,   positive roll rotation,  right side down
-float32 pitch    # move forward, negative pitch rotation, nose down
-float32 yaw      #               positive yaw rotation,   clockwise when seen top down
-float32 throttle # move up,      positive thrust,         -1 is minimum available 0% or -100% +1 is 100% thrust
+float32 x			 # stick position in x direction -1..1
+				 # in general corresponds to forward/back motion or pitch of vehicle,
+				 # in general a positive value means forward or negative pitch and
+				 # a negative value means backward or positive pitch
+
+float32 y			 # stick position in y direction -1..1
+				 # in general corresponds to right/left motion or roll of vehicle,
+				 # in general a positive value means right or positive roll and
+				 # a negative value means left or negative roll
+
+float32 z			 # throttle stick position 0..1
+				 # in general corresponds to up/down motion or thrust of vehicle,
+				 # in general the value corresponds to the demanded throttle by the user,
+				 # if the input is used for setting the setpoint of a vertical position
+				 # controller any value > 0.5 means up and any value < 0.5 means down
+
+float32 r			 # yaw stick/twist position, -1..1
+				 # in general corresponds to the righthand rotation around the vertical
+				 # (downwards) axis of the vehicle
 
 float32 flaps			 # flap position
 
-float32 aux1
-float32 aux2
-float32 aux3
-float32 aux4
-float32 aux5
+float32 aux1			 # default function: camera yaw / azimuth
+float32 aux2			 # default function: camera pitch / tilt
+float32 aux3			 # default function: camera trigger
+float32 aux4			 # default function: camera roll
+float32 aux5			 # default function: payload drop
 float32 aux6
 
-bool sticks_moving
-
-# TOPICS manual_control_setpoint manual_control_input
-# DEPRECATED: float32 x
-# DEPRECATED: float32 y
-# DEPRECATED: float32 z
-# DEPRECATED: float32 r
